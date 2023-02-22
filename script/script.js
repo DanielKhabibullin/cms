@@ -1,5 +1,5 @@
 'use strict';
-// import * as data from '../goods.json';
+// import data from "../goods.json" assert { type: "json" };
 
 const modalTitle = document.querySelector('.modal__title');
 const modalForm = document.querySelector('.modal__form');
@@ -13,8 +13,9 @@ overlay.classList.remove('active');
 const createRow = (item) => {
 	const tableRow = document.createElement('tr');
 	tableRow.innerHTML = `
-		<td class="table__cell ">${item.number}</td>
-		<td class="table__cell table__cell_left table__cell_name" data-id="${item.id}">
+		<td class="table__cell ">Здесь могла быть ваша реклама</td>
+		<td class="table__cell table__cell_left table__cell_name"
+		data-id="${item.id}">
 			<span class="table__cell-id">id: ${item.id}</span>${item.title}</td>
 		<td class="table__cell table__cell_left">${item.category}</td>
 		<td class="table__cell">${item.units}</td>
@@ -38,7 +39,6 @@ const renderGoods = (data) => {
 
 const data = [
 	{
-		number: 3,
 		"id": 1,
 		"title": "Смартфон Xiaomi 11T 8/128GB",
 		"price": 27000,
@@ -50,10 +50,9 @@ const data = [
 		"images": {
 			"small": "img/smrtxiaomi11t-m.jpg",
 			"big": "img/smrtxiaomi11t-b.jpg"
-		}
+		},
 	},
 	{
-		number: 4,
 		"id": 2,
 		"title": "Радиоуправляемый автомобиль Cheetan",
 		"price": 4000,
@@ -68,7 +67,6 @@ const data = [
 		}
 	},
 	{
-		number: 5,
 		"id": 3,
 		"title": "ТВ приставка MECOOL KI",
 		"price": 12400,
@@ -83,7 +81,6 @@ const data = [
 		}
 	},
 	{
-		number: 6,
 		"id": 4,
 		"title": "Витая пара PROConnect 01-0043-3-25",
 		"price": 22,
