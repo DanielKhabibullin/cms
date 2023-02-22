@@ -1,46 +1,5 @@
-'use strict';
-
-const modalTitle = document.querySelector('.modal__title');
-const modalForm = document.querySelector('.modal__form');
-const modalCheckbox = document.querySelector('.modal__checkbox');
-const modalInputDiscount = document.querySelector('.modal__input_discount');
-const overlay = document.querySelector('.overlay');
-const tbody = document.querySelector('.table__body');
-
-overlay.classList.remove('active');
-
-const createRow = (tbody, data) => {
-	const tableRows = data.map((item) => {
-		const tableRow = document.createElement('tr');
-		// const tableData = document.createElement('td');
-		// tableData.classList.add('table__cell');
-		tableRow.innerHTML = `
-			<td class="table__cell ">${item.number}</td>
-			<td class="table__cell table__cell_left table__cell_name" data-id="${item.id}">
-				<span class="table__cell-id">id: ${item.id}</span>${item.title}</td>
-			<td class="table__cell table__cell_left">${item.category}</td>
-			<td class="table__cell">${item.units}</td>
-			<td class="table__cell">${item.count}</td>
-			<td class="table__cell">${item.price}</td>
-			<td class="table__cell">${item.count * item.price}</td>
-			<td class="table__cell table__cell_btn-wrapper">
-				<button class="table__btn table__btn_pic"></button>
-				<button class="table__btn table__btn_edit"></button>
-				<button class="table__btn table__btn_del"></button>
-			</td>
-		`;
-		return tableRow;
-	});
-	tbody.append(...tableRows);
-};
-
-const renderGoods = (arr) => {
-	
-};
-
-const data = [
+[
   {
-		number: 3,
     "id": 1,
     "title": "Смартфон Xiaomi 11T 8/128GB",
     "price": 27000,
@@ -55,7 +14,6 @@ const data = [
     }
   },
   {
-		number: 4,
     "id": 2,
     "title": "Радиоуправляемый автомобиль Cheetan",
     "price": 4000,
@@ -70,7 +28,6 @@ const data = [
     }
   },
   {
-		number: 5,
     "id": 3,
     "title": "ТВ приставка MECOOL KI",
     "price": 12400,
@@ -85,7 +42,6 @@ const data = [
     }
   },
   {
-		number: 6,
     "id": 4,
     "title": "Витая пара PROConnect 01-0043-3-25",
     "price": 22,
@@ -93,15 +49,10 @@ const data = [
     "category": "cables",
     "discont": false,
     "count": 420,
-    "units": "м",
+    "units": "v",
     "images": {
       "small": "img/lan_proconnect43-3-25.jpg",
       "big": "img/lan_proconnect43-3-25-b.jpg"
     }
   }
 ];
-
-const json = JSON.stringify(data);
-console.log('json: ', json);
-createRow(tbody, data);
-
