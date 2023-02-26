@@ -1,62 +1,7 @@
 'use strict';
 // import data from "../goods.json" assert { type: "json" };
 
-const modalTitle = document.querySelector('.modal__title');
-const modalForm = document.querySelector('.modal__form');
-const modalCheckbox = document.querySelector('.modal__checkbox');
-const modalInputDiscount = document.querySelector('.modal__input_discount');
-const tbody = document.querySelector('.table__body');
-const buttonAdd = document.querySelector('.panel__add-goods');
-const buttonModalClose = document.querySelector('.modal__close');
-const overlay = document.querySelector('.overlay');
-const formOverlay = document.querySelector('.overlay__modal');
-
-
-overlay.classList.remove('active');
-buttonAdd.addEventListener('click', () => {
-	overlay.classList.add('active');
-});
-
-formOverlay.addEventListener('click', e => {
-	e.stopPropagation(); // todo delegation
-});
-
-overlay.addEventListener('click', () => {
-	overlay.classList.remove('active');
-});
-
-buttonModalClose.addEventListener('click', () => {
-	overlay.classList.remove('active');
-});
-
-const createRow = (item) => {
-	const tableRow = document.createElement('tr');
-	tableRow.innerHTML = `
-		<td class="table__cell ">Здесь могла быть ваша реклама</td>
-		<td class="table__cell table__cell_left table__cell_name"
-		data-id="${item.id}">
-			<span class="table__cell-id">id: ${item.id}</span>${item.title}</td>
-		<td class="table__cell table__cell_left">${item.category}</td>
-		<td class="table__cell">${item.units}</td>
-		<td class="table__cell">${item.count}</td>
-		<td class="table__cell">${item.price}</td>
-		<td class="table__cell">${item.count * item.price}</td>
-		<td class="table__cell table__cell_btn-wrapper">
-			<button class="table__btn table__btn_pic"></button>
-			<button class="table__btn table__btn_edit"></button>
-			<button class="table__btn table__btn_del"></button>
-		</td>
-	`;
-	return tableRow;
-};
-
-const renderGoods = (data) => {
-	data.map((item) => {
-		tbody.append(createRow(item));
-	});
-};
-
-const data = [
+let data = [
 	{
 		"id": 1,
 		"title": "Смартфон Xiaomi 11T 8/128GB",
@@ -115,7 +60,72 @@ const data = [
 	}
 ];
 
-const json = JSON.stringify(data, null, 2);
-console.log('json: ', json);
+const modalTitle = document.querySelector('.modal__title');
+const modalForm = document.querySelector('.modal__form');
+const modalCheckbox = document.querySelector('.modal__checkbox');
+const modalInputDiscount = document.querySelector('.modal__input_discount');
+const tbody = document.querySelector('.table__body');
+const buttonAdd = document.querySelector('.panel__add-goods');
+const buttonModalClose = document.querySelector('.modal__close');
+const overlay = document.querySelector('.overlay');
+const formOverlay = document.querySelector('.overlay__modal');
+
+overlay.classList.remove('active');
+
+const createRow = (item) => {
+	const tableRow = document.createElement('tr');
+	tableRow.innerHTML = `
+		<td class="table__cell ">Продам гараж</td>
+		<td class="table__cell table__cell_left table__cell_name"
+		data-id="${item.id}">
+			<span class="table__cell-id">id: ${item.id}</span>${item.title}</td>
+		<td class="table__cell table__cell_left">${item.category}</td>
+		<td class="table__cell">${item.units}</td>
+		<td class="table__cell">${item.count}</td>
+		<td class="table__cell">${item.price}</td>
+		<td class="table__cell">${item.count * item.price}</td>
+		<td class="table__cell table__cell_btn-wrapper">
+			<button class="table__btn table__btn_pic"></button>
+			<button class="table__btn table__btn_edit"></button>
+			<button class="table__btn table__btn_del"></button>
+		</td>
+	`;
+	return tableRow;
+};
+
+const renderGoods = (data) => {
+	data.map((item) => {
+		tbody.append(createRow(item));
+	});
+};
+
 renderGoods(data);
+
+buttonAdd.addEventListener('click', () => {
+	overlay.classList.add('active');
+});
+
+overlay.addEventListener('click', e => {
+	const target = e.target;
+	if (target === overlay || target.classList.contains('modal__close')) {
+		overlay.classList.remove('active');
+	}
+});
+
+buttonModalClose.addEventListener('click', () => {
+	overlay.classList.remove('active');
+});
+
+const rows = document.querySelectorAll('.table__body tr');
+rows.forEach((row, index) => {
+	row.addEventListener('click', e => {
+		if (e.target.closest('.table__btn_del')) {
+			row.remove();
+			console.log('data: ', data);
+		}
+	});
+});
+
+// const json = JSON.stringify(data, null, 2);
+// console.log('json: ', json);
 
