@@ -69,8 +69,14 @@ const buttonAdd = document.querySelector('.panel__add-goods');
 const buttonModalClose = document.querySelector('.modal__close');
 const overlay = document.querySelector('.overlay');
 const formOverlay = document.querySelector('.overlay__modal');
+const spanId = document.querySelector('.vendor-code__id');
 
 overlay.classList.remove('active');
+
+const addItemData = item => {
+	data.push(item);
+	console.log('data: ', data);
+};
 
 const createRow = (item) => {
 	const tableRow = document.createElement('tr');
@@ -101,20 +107,30 @@ const renderGoods = (data) => {
 
 renderGoods(data);
 
-buttonAdd.addEventListener('click', () => {
-	overlay.classList.add('active');
-});
+const modalControl = (buttonAdd, overlay) => {
+	const openModal = () => {
+		overlay.classList.add('active');
+		spanId.textContent = `${Math.floor(Math.random() * 10000000000000)}`;
+	};
 
-overlay.addEventListener('click', e => {
-	const target = e.target;
-	if (target === overlay || target.classList.contains('modal__close')) {
+	const closeModal = () => {
 		overlay.classList.remove('active');
-	}
-});
+	};
 
-buttonModalClose.addEventListener('click', () => {
-	overlay.classList.remove('active');
-});
+	buttonAdd.addEventListener('click', openModal);
+
+	overlay.addEventListener('click', e => {
+		const target = e.target;
+		if (target === overlay || target.closest('.modal__close')) {
+			closeModal();
+		}
+	});
+	return {
+		closeModal,
+	};
+};
+
+const {closeModal} = modalControl(buttonAdd, overlay);
 
 tbody.addEventListener('click', e => {
 	const target = e.target;
@@ -128,7 +144,14 @@ tbody.addEventListener('click', e => {
 	}
 });
 
-
+modalCheckbox.addEventListener('change', () => {
+	if (modalCheckbox.checked) {
+		modalInputDiscount.removeAttribute('disabled');
+	} else {
+		modalInputDiscount.value = '';
+		modalInputDiscount.setAttribute('disabled', true);
+	}
+});
 
 // const json = JSON.stringify(data, null, 2);
 // console.log('json: ', json);
