@@ -121,10 +121,8 @@ rows.forEach((row, index) => {
 	row.addEventListener('click', e => {
 		if (e.target.closest('.table__btn_del')) {
 			row.remove();
-			const index = data.findIndex(n => n.id === data.id);
-			if (index !== -1) {
-				data.splice(index, 1);
-			}
+			console.log(index);
+			data.splice(index, 1);
 			console.log('data: ', data);
 		}
 	});
