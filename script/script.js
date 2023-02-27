@@ -75,7 +75,7 @@ overlay.classList.remove('active');
 const createRow = (item) => {
 	const tableRow = document.createElement('tr');
 	tableRow.innerHTML = `
-		<td class="table__cell ">Продам гараж</td>
+		<td class="table__cell ">${item.id}</td>
 		<td class="table__cell table__cell_left table__cell_name"
 		data-id="${item.id}">
 			<span class="table__cell-id">id: ${item.id}</span>${item.title}</td>
@@ -116,16 +116,16 @@ buttonModalClose.addEventListener('click', () => {
 	overlay.classList.remove('active');
 });
 
-const rows = document.querySelectorAll('.table__body tr');
-rows.forEach((row, index) => {
-	row.addEventListener('click', e => {
-		if (e.target.closest('.table__btn_del')) {
-			row.remove();
-			console.log(index);
-			data.splice(index, 1);
-			console.log('data: ', data);
-		}
-	});
+tbody.addEventListener('click', e => {
+	const target = e.target;
+	if (target.closest('.table__btn_del')) {
+		// target.closest('.table__body tr').remove();
+		const row = target.closest('tr');
+		const currentId = +row.querySelector('td').textContent;
+		data.splice(data.findIndex(item => item.id === currentId), 1);
+		console.log(data);
+		row.remove();
+	}
 });
 
 
