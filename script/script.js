@@ -1,6 +1,4 @@
-import {buttonAdd, modalForm, overlay,
-	randomId, tbody} from './modules/const.js';
-import {formControl, modalControl} from './modules/control.js';
+import {modalActivate} from './modules/control.js';
 import {getTotalPrice, renderGoods} from './modules/render.js';
 
 export const data = [
@@ -63,9 +61,8 @@ export const data = [
 ];
 
 const init = () => {
-	const {closeModal} = modalControl(buttonAdd, overlay, randomId);
 	renderGoods(data);
-	formControl(modalForm, tbody, closeModal, randomId);
 	getTotalPrice();
+	modalActivate();
 };
 init();

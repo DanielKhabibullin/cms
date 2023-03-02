@@ -1,4 +1,4 @@
-import {tbody} from './const.js';
+import {overlay, tbody} from './const.js';
 import {createRow} from './createElements.js';
 
 export const getTotalPrice = () => {
@@ -23,6 +23,7 @@ export const renderGoods = (arr) => {
 	});
 	goodNumberChange();
 	getTotalPrice();
+	overlay.classList.remove('active');
 };
 
 
