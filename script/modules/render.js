@@ -1,4 +1,5 @@
 import {overlay, tbody} from './const.js';
+import {rowControl} from './control.js';
 import {createRow} from './createElements.js';
 
 export const getTotalPrice = () => {
@@ -23,6 +24,7 @@ export const renderGoods = (arr) => {
 	});
 	goodNumberChange();
 	getTotalPrice();
+	rowControl();
 	overlay.classList.remove('active');
 };
 

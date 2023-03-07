@@ -54,6 +54,20 @@ export const formControl = (form, tbody, closeModal, randomId) => {
 	});
 };
 
+export const rowControl = () => {
+	tbody.addEventListener('click', e => {
+		const target = e.target;
+		if (target.closest('.table__btn_pic')) {
+			const width = 800;
+			const height = 600;
+			const left = (screen.width / 2) - (width / 2);
+			const top = (screen.height / 2) - (height / 2);
+			open(target.dataset.pic, 'picture', `width=${width},
+				height=${height}, top=${top}, left=${left}`);
+		}
+	});
+};
+
 export const modalActivate = () => {
 	modalForm.price.addEventListener('blur', () => {
 		modalForm.total.value = `$ ${modalForm.price.value *
