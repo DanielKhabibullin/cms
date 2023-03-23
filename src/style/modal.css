@@ -86,12 +86,13 @@
 }
 
 .modal__error {
-	color: red;
-	font-weight: 600;
-	font-size: 16px;
-	line-height: 20px;
-	letter-spacing: .05em;
+	max-width: 238px;
+	color: #D80101;
+	font-weight: 700;
+	font-size: 14px;
+	line-height: 17px;
 	text-align: center;
+	letter-spacing: 0.1em;
 	text-transform: uppercase;
 }
 
@@ -154,22 +155,27 @@
 	/* display: none; */
 	width: 200px;
 	height: 200px;
-	/* margin: 0 auto; */
+	margin: 0 auto;
 }
 
-.image-container:hover:after {
-	content: '';
-	position: absolute;
-	top: 10px;
-	right: -6px;
-	transform: translateX(-50%);
-	transform: rotate(45deg);
-	width: 35px;
-	height: 1px;
-	border: 1px solid black;
-}
+
 
 .image-container:hover:before {
+	content: '';
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	background-image: url(../img/ic_outline-delete-forever.svg);
+	top: calc(50% - 20px);
+	left: calc(50% - 20px);
+}
+
+.image-container:hover {
+	background-color: #000;
+	opacity: .5;
+}
+
+/* .image-container:hover:before {
 	content: '';
 	position: absolute;
 	top: 10px;
@@ -178,7 +184,7 @@
 	width: 35px;
 	height: 1px;
 	border: 1px solid black;
-}
+} */
 
 .modal__label_file:hover {
 	background-color: #6E6893;

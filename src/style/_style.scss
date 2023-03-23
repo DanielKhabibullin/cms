@@ -1,0 +1,86 @@
+html {
+	position: relative;
+	box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
+body {
+	position: relative;
+	min-width: 560px;
+	min-height: 100vh;
+	font-family: Inter, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: 400;
+	color: #25213B;
+	background-color: #F2F0F9;
+}
+
+
+img, svg {
+	max-width: 100%;
+	max-height: 100%; //todo
+	height: auto;
+}
+
+button {
+	padding: 0;
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+h1, h2, h3, p, figure, fieldset {
+	margin: 0;
+}
+
+iframe {
+	border: none;
+}
+
+/*
+Hide accessibility elements
+*/
+.visually-hidden {
+	position: fixed;
+	transform: scale(0);
+	// position: absolute !important;
+	// clip: rect(1px 1px 1px 1px);
+	// /* IE6, IE7 */
+	// clip: rect(1px, 1px, 1px, 1px);
+	// padding: 0 !important;
+	// border: 0 !important;
+	// height: 1px !important;
+	// width: 1px !important;
+	// overflow: hidden;
+}
+
+/* Container example
+If container 1180px then add 30px * 2 padding to max-width, 
+= 1240px
+*/
+
+.container {
+	max-width: 1180px;
+	padding: 0 40px;
+	margin: 0 auto;
+}
+
+
+fieldset {
+	padding: 0;
+	border: none
+}

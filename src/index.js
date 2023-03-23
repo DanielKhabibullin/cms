@@ -1,3 +1,5 @@
+import './index.html';
+import './index.scss';
 import {modalActivate} from './modules/control.js';
 import {getTotalPrice, renderGoods} from './modules/render.js';
 import './modules/const.js';

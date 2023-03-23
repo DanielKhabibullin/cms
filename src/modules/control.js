@@ -1,4 +1,4 @@
-import {data} from '../script.js';
+import {data} from '../index.js';
 import {buttonAdd, buttonAddImage, modalCheckbox, modalFieldset, modalForm,
 	modalInputDiscount, overlay, randomId, spanId, tbody} from './const.js';
 import {createRow} from './createElements.js';
