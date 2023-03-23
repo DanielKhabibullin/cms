@@ -1,14 +1,10 @@
 import {data} from '../script.js';
-import {buttonAdd, modalCheckbox, modalForm, modalInputDiscount,
-	overlay,
-	randomId,
-	spanId, tbody} from './const.js';
+import {buttonAdd, buttonAddImage, modalCheckbox, modalFieldset, modalForm,
+	modalInputDiscount, overlay, randomId, spanId, tbody} from './const.js';
 import {createRow} from './createElements.js';
 import {getTotalPrice, goodNumberChange} from './render.js';
-
 export const addItemData = item => {
 	data.push(item);
-	console.log('data: ', data);
 };
 
 const openModal = () => {
@@ -105,3 +101,32 @@ export const modalActivate = () => {
 	modalControl(buttonAdd, overlay, randomId);
 	formControl(modalForm, tbody, closeModal, randomId);
 };
+
+buttonAddImage.addEventListener('change', () => {
+	const file = buttonAddImage.files[0];
+	const fileSizeInMB = file.size / (1024 * 1024);
+	const error = document.querySelector('.modal__error');
+	const imageContainer = document.querySelector('.image-container');
+	if (imageContainer) {
+		imageContainer.remove();
+	}
+
+	if (error) {
+		error.remove();
+	}
+	if (buttonAddImage.files.length > 0 && fileSizeInMB > 1) {
+		const errorElement = document.createElement('h3');
+		errorElement.classList.add('modal__error');
+		errorElement.textContent = `Изображение не должно превышать размер 1 Мб`;
+		modalFieldset.append(errorElement);
+	}
+	if (buttonAddImage.files.length > 0 && fileSizeInMB < 1) {
+		const imageContainerNew = document.createElement('div');
+		imageContainerNew.classList.add('image-container');
+		modalFieldset.append(imageContainerNew);
+		const preview = document.createElement('img');
+		preview.onload = () => URL.revokeObjectURL(preview.src);
+		preview.src = URL.createObjectURL(file);
+		imageContainerNew.append(preview);
+	}
+});

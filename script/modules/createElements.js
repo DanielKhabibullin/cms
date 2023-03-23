@@ -2,7 +2,7 @@ export const createRow = (item) => {
 	const tableRow = document.createElement('tr');
 	// const num = document.querySelectorAll('tr');
 	tableRow.innerHTML = `
-		<td class="table__cell "></td>
+		<td class="table__cell"></td>
 		<td class="table__cell table__cell_left table__cell_name"
 		data-id="${item.id}">
 			<span class="table__cell-id">id: ${item.id}</span>${item.name}</td>

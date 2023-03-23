@@ -12,3 +12,5 @@ export const overlay = document.querySelector('.overlay');
 export const formOverlay = document.querySelector('.overlay__modal');
 export const spanId = document.querySelector('.vendor-code__id');
 export const randomId = Math.floor(Math.random() * 10000000000000);
+export const buttonAddImage = document.querySelector('.modal__file');
+export const modalFieldset = document.querySelector('.modal__fieldset');
