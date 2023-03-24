@@ -158,7 +158,9 @@
 	margin: 0 auto;
 }
 
-
+.image-container img {
+	object-fit: contain;
+}
 
 .image-container:hover:before {
 	content: '';

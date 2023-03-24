@@ -1,11 +1,14 @@
-import {data} from '../index.js';
-import {buttonAdd, buttonAddImage, modalCheckbox, modalFieldset, modalForm,
-	modalInputDiscount, overlay, randomId, spanId, tbody} from './const.js';
+import {apiURL, buttonAdd, buttonAddImage, modalCheckbox, modalFieldset,
+	modalForm, modalInputDiscount, overlay, randomId, spanId, tbody,
+} from './const.js';
 import {createRow} from './createElements.js';
+import {fetchRequest} from './fetchRequest.js';
 import {getTotalPrice, goodNumberChange} from './render.js';
-export const addItemData = item => {
-	data.push(item);
-};
+import {toBase64} from './sendImage.js';
+
+// export const addItemData = item => {
+// 	data.push(item); // TODO
+// };
 
 const openModal = () => {
 	overlay.classList.add('active');
@@ -35,17 +38,31 @@ export const addItemPage = (item, tbody) => {
 };
 
 export const formControl = (form, tbody, closeModal, randomId) => {
-	form.addEventListener('submit', e => {
+	form.addEventListener('submit', async e => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const newItem = Object.fromEntries(formData);
 		newItem.id = randomId;
-		console.log('newItem: ', newItem);
+		if (!newItem.discount) {
+			newItem.discount = 0;
+		}
+		newItem.image = await toBase64(newItem.image);
 		addItemPage(newItem, tbody);
-		addItemData(newItem);
+		// addItemData(newItem);
+		fetchRequest(apiURL, {
+			method: 'post',
+			body: newItem,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
 		form.reset();
 		closeModal();
-		getTotalPrice();
+		const imageContainer = document.querySelector('.image-container');
+		if (imageContainer) {
+			imageContainer.remove();
+		}
+		// getTotalPrice(); // TODO NaN
 		goodNumberChange();
 	});
 };
@@ -63,44 +80,73 @@ export const rowControl = () => {
 		}
 	});
 };
+export const modalTotalPrice = () => {
+	if (!modalForm.discount.value) {
+		modalForm.discount.value = 0;
+	}
+	const discount = (modalForm.price.value *
+		modalForm.discount.value / 100).toFixed(2);
+	const totalItemPrice = (modalForm.count.value *
+		(modalForm.price.value - discount)).toFixed(2);
+	modalForm.total.value = `$ ${totalItemPrice}`;
+};
 
 export const modalActivate = () => {
-	modalForm.price.addEventListener('blur', () => {
-		modalForm.total.value = `$ ${modalForm.price.value *
-			modalForm.count.value}`;
+	let timeout = null;
+	modalForm.price.addEventListener('input', () => {
+		clearTimeout(timeout);
+		timeout = setTimeout(modalTotalPrice, 300);
 	});
-	modalForm.count.addEventListener('blur', () => {
-		modalForm.total.value = `$ ${modalForm.price.value *
-			modalForm.count.value}`;
+	modalForm.discount.addEventListener('input', () => {
+		clearTimeout(timeout);
+		timeout = setTimeout(modalTotalPrice, 300);
 	});
-
-	tbody.addEventListener('click', e => {
-		const target = e.target;
-		if (target.closest('.table__btn_del')) {
-			// target.closest('.table__body tr').remove();
-			const row = target.closest('tr');
-			const currentId = +row.querySelector('td').textContent;
-			data.splice(data.findIndex(item => item.id === currentId), 1);
-			console.log(data);
-			row.remove();
-			getTotalPrice();
-			goodNumberChange();
-		}
+	modalForm.count.addEventListener('input', () => {
+		clearTimeout(timeout);
+		timeout = setTimeout(modalTotalPrice, 300);
 	});
 
 	modalCheckbox.addEventListener('change', () => {
 		if (modalCheckbox.checked) {
 			modalInputDiscount.removeAttribute('disabled');
 			modalInputDiscount.setAttribute('required', true);
+			modalTotalPrice();
 		} else {
-			modalInputDiscount.value = '';
+			modalInputDiscount.value = 0;
 			modalInputDiscount.setAttribute('disabled', true);
+			modalTotalPrice();
 		}
 	});
 
 	modalControl(buttonAdd, overlay, randomId);
 	formControl(modalForm, tbody, closeModal, randomId);
 };
+
+tbody.addEventListener('click', async e => {
+	const target = e.target;
+	if (target.closest('.table__btn_del')) {
+		const row = target.closest('tr');
+		const currentId = row.querySelector('.table__cell_name')
+			.getAttribute('data-id');
+		try {
+			const response = await fetchRequest(`${apiURL}/${currentId}`,
+				{
+					method: 'DELETE',
+				});
+			const responseBody = await response.json();
+			console.log(responseBody);
+			if (response.ok) {
+				row.remove();
+				getTotalPrice();
+				goodNumberChange();
+			} else {
+				throw new Error(`Error: ${response.statusText}`);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	}
+});
 
 buttonAddImage.addEventListener('change', () => {
 	const file = buttonAddImage.files[0];

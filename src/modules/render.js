@@ -18,8 +18,16 @@ export const goodNumberChange = () => {
 	});
 };
 
-export const renderGoods = (arr) => {
-	arr.map((item) => {
+export const renderGoods = (err, data) => {
+	if (err) {
+		console.warn(err, data);
+		const h2 = document.createElement('h2');
+		h2.style.color = 'red';
+		h2.textContent = err;
+		document.body.append(h2);
+		return;
+	}
+	data.map((item) => {
 		tbody.append(createRow(item));
 	});
 	goodNumberChange();
