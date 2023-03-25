@@ -1,4 +1,5 @@
 import {apiURL} from './const.js';
+import { formControl } from './control.js';
 import {renderGoods} from './render.js';
 
 // const URL = 'https://conscious-stellar-rainbow.glitch.me/api/goods';
@@ -35,6 +36,6 @@ export const getGoods = async () => {
 		callback: renderGoods,
 	});
 	if (result) {
-	//	reservationButton.disabled = true;
+		console.log(result);
 	}
 };

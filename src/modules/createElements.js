@@ -7,7 +7,8 @@ export const createRow = (item) => {
 		<td class="table__cell"></td>
 		<td class="table__cell table__cell_left table__cell_name"
 		data-id="${item.id}">
-			<span class="table__cell-id">id: ${item.id}</span>${item.title}</td>
+			<span class="table__cell-id">id: ${item.id}</span>
+			<p class="table__cell_title">${item.title}</p></td>
 		<td class="table__cell table__cell_left">${item.category}</td>
 		<td class="table__cell">${item.units}</td>
 		<td class="table__cell">${item.count}</td>

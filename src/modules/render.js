@@ -34,6 +34,10 @@ export const renderGoods = (err, data) => {
 	getTotalPrice();
 	rowControl();
 	overlay.classList.remove('active');
+
+	return true;
 };
 
+// export const renderCategory = (err, data) => {
 
+// };

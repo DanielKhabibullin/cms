@@ -2,16 +2,14 @@ import {apiURL, buttonAdd, buttonAddImage, modalCheckbox, modalFieldset,
 	modalForm, modalInputDiscount, overlay, randomId, spanId, tbody,
 } from './const.js';
 import {createRow} from './createElements.js';
+import {modalShow} from './deleteModal.js';
 import {fetchRequest} from './fetchRequest.js';
 import {getTotalPrice, goodNumberChange} from './render.js';
 import {toBase64} from './sendImage.js';
 
-// export const addItemData = item => {
-// 	data.push(item); // TODO
-// };
-
 const openModal = () => {
 	overlay.classList.add('active');
+	// if (!currentId) {
 	spanId.textContent = `${randomId}`;
 };
 
@@ -47,22 +45,28 @@ export const formControl = (form, tbody, closeModal, randomId) => {
 			newItem.discount = 0;
 		}
 		newItem.image = await toBase64(newItem.image);
-		addItemPage(newItem, tbody);
-		// addItemData(newItem);
+		addItemPage(newItem, tbody); // TODO
 		fetchRequest(apiURL, {
 			method: 'post',
 			body: newItem,
+			callback(err, data) {
+				if (err) {
+					console.warn(err, data);
+					form.textContent = err;
+				}
+				form.textContent = `Товар ${data.title} добавлен в таблицу`; // todo
+			},
 			headers: {
 				'Content-Type': 'application/json',
 			},
 		});
 		form.reset();
 		closeModal();
-		const imageContainer = document.querySelector('.image-container');
-		if (imageContainer) {
-			imageContainer.remove();
-		}
-		// getTotalPrice(); // TODO NaN
+		// const imageContainer = document.querySelector('.image-container');
+		// if (imageContainer) {
+		// 	imageContainer.remove();
+		// }
+		getTotalPrice();
 		goodNumberChange();
 	});
 };
@@ -80,6 +84,7 @@ export const rowControl = () => {
 		}
 	});
 };
+
 export const modalTotalPrice = () => {
 	if (!modalForm.discount.value) {
 		modalForm.discount.value = 0;
@@ -126,25 +131,22 @@ tbody.addEventListener('click', async e => {
 	const target = e.target;
 	if (target.closest('.table__btn_del')) {
 		const row = target.closest('tr');
+		const currentTitle = row.querySelector('.table__cell_title').textContent;
 		const currentId = row.querySelector('.table__cell_name')
 			.getAttribute('data-id');
-		try {
-			const response = await fetchRequest(`${apiURL}/${currentId}`,
-				{
-					method: 'DELETE',
-				});
-			const responseBody = await response.json();
-			console.log(responseBody);
-			if (response.ok) {
-				row.remove();
-				getTotalPrice();
-				goodNumberChange();
-			} else {
-				throw new Error(`Error: ${response.statusText}`);
-			}
-		} catch (err) {
-			console.log(err);
-		}
+		modalShow(null, currentId, currentTitle);
+		document.body.style.overflow = 'hidden';
+	}
+});
+
+tbody.addEventListener('click', async e => {
+	const target = e.target;
+	if (target.closest('.table__btn_edit')) {
+		const row = target.closest('tr');
+		const currentId = row.querySelector('.table__cell_name')
+			.getAttribute('data-id');
+		openModal();
+		document.body.style.overflow = 'hidden';
 	}
 });
 
