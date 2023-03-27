@@ -1,5 +1,6 @@
 export const modalTitle = document.querySelector('.modal__title');
 export const modalForm = document.querySelector('.modal__form');
+export const modalId = document.querySelector('.vendor-code__id');
 export const modalCheckbox = document.querySelector('.modal__checkbox');
 export const modalInputDiscount = document
 	.querySelector('.modal__input_discount');
@@ -14,8 +15,15 @@ export const spanId = document.querySelector('.vendor-code__id');
 export const randomId = Math.floor(Math.random() * 10000000000000);
 export const buttonAddImage = document.querySelector('.modal__file');
 export const modalFieldset = document.querySelector('.modal__fieldset');
-export const apiURL = 'http://localhost:3000/api/goods';
+export const apiURL = 'http://localhost:3000';
+export const apiCategory = 'http://localhost:3000/api/category';
 export const API_URL = 'https://conscious-stellar-rainbow.glitch.me';
+
+export const modalCategory = document.getElementById('category');
+
+export const secondLabel = modalForm.querySelectorAll('.modal__label')[1];
+
+export const searchInput = document.querySelector('.panel__input');
 
 // GET /api/goods - получить список товаров, в query параметр search можно передать поисковый запрос
 // POST /api/goods - создать товар, в теле запроса нужно передать объект {title: string, description: string, price: number, discount?: number, count: number, units: string, images?: [] }

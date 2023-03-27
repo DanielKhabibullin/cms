@@ -298,7 +298,8 @@
 
 }
 
-.modal__submit {
+.modal__submit,
+.modal__cancel {
 	font-weight: 600;
 	padding: 10px 25px;
 	font-size: 16px;
@@ -312,11 +313,13 @@
 	color: #FFFFFF;
 }
 
-.modal__submit:hover {
+.modal__submit:hover,
+.modal__cancel:hover {
 	background-color: #6E6893;
 }
 
-.modal__submit:focus {
+.modal__submit:focus,
+.modal__cancel:focus {
 	background-color: #6E6893;
 }
 
