@@ -1,21 +1,26 @@
 import {confirmationControl, discountCheckboxControl, fileControl,
 	formControl, modalTotalPrice, overlayControl} from './control.js';
 import {renderCategories} from './render.js';
-import {buttonModalClose, modalCategory, modalCheckbox, modalFieldset, modalForm, modalId,
-	modalSubmit, modalTitle, overlay, randomId} from './const.js';
+import {apiURL, modalCategory, modalCheckbox,
+	modalFieldset, modalFile, modalForm, modalId,
+	modalInputDiscount,
+	modalSubmit, modalTitle, overlay, wrapperId} from './const.js';
 
 export const showError = message => {
-	console.log(message);
+	console.warn(message);
 
 	const error = document.createElement('div');
-	error.className = 'overlay';
+	error.classList.add('overlay__message', 'active');
 
 	error.innerHTML = `
 		<div class="message">
-			<button class="overlay__close-button
-				overlay__close-button_small"></button>
+			<button class="overlay__message_close">
+			<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="m2 2 20 20M2 22 22 2" stroke="currentColor" stroke-width="3"
+					stroke-linecap="round"/></svg>
+					</button>
 			<div class="message__content">
-				<svg width="94" height="94" viewBox="0 0 94 94"
+				<svg width="90" height="90" viewBox="0 0 90 90"
 					fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M2 2L92 92" stroke="#D80101"
 						stroke-width="3" stroke-linecap="round" />
@@ -29,10 +34,8 @@ export const showError = message => {
 		</div>
 	`;
 
-	const close = error.querySelector('.overlay__close-button');
-
 	document.body.append(error);
-	overlayControl(error, close);
+	overlayControl(error);
 };
 
 export const showModal = async (err, data, tbody) => {
@@ -42,13 +45,18 @@ export const showModal = async (err, data, tbody) => {
 	}
 
 	overlay.classList.add('active');
-	// const img = modalForm.getElement
-	// console.log('img: ', img);
-	const newId = randomId;
-	data && data.discount ? modalCheckbox.checked = true :
-	modalCheckbox.checked = false;
+	const imageContainer = document.querySelector('.image-container');
+	if (imageContainer) {
+		imageContainer.remove();
+	}
+	const datalistCategoriesOld = document.querySelector('#category-list');
+
+	if (datalistCategoriesOld) {
+		datalistCategoriesOld.remove();
+	}
 	if (data) {
 		modalTitle.textContent = 'Изменить товар';
+		wrapperId.style.display = 'flex';
 		modalId.textContent = `${data.id}`;
 		modalForm.title.value = `${data.title}`;
 		modalForm.category.value = `${data.category}`;
@@ -58,9 +66,26 @@ export const showModal = async (err, data, tbody) => {
 		modalForm.price.value = `${data.price}`;
 		modalForm.discount.value = `${data.discount}`;
 		modalSubmit.textContent = 'Изменить товар';
+		if (data.image && data.image !== 'image/notimage.jpg') {
+			const imageContainerNew = document.createElement('div');
+			modalFile.textContent = `Изменить изображение`;
+			imageContainerNew.classList.add('image-container');
+			modalFieldset.append(imageContainerNew);
+			const preview = document.createElement('img');
+			preview.onload = () => URL.revokeObjectURL(preview.src);
+			preview.src = `${apiURL}/${data.image}`;
+			imageContainerNew.append(preview);
+		}
+		if (data && data.discount !== 0) {
+			modalCheckbox.checked = true;
+			modalInputDiscount.removeAttribute('disabled');
+		} else {
+			modalCheckbox.checked = false;
+			modalInputDiscount.setAttribute('disabled', true);
+		}
 	} else {
 		modalTitle.textContent = 'Добавить товар';
-		modalId.textContent = `${newId}`;
+		wrapperId.style.display = 'none';
 		modalForm.title.value = ``;
 		modalForm.category.value = ``;
 		modalForm.units.value = ``;
@@ -71,23 +96,20 @@ export const showModal = async (err, data, tbody) => {
 		modalSubmit.textContent = 'Добавить товар';
 	}
 	modalTotalPrice();
-	// ${data && data.image && data.image !== 'image/notimage.jpg' ?
-	// ${address}/${data.image} : ''}
-	// ${(data ?
+
 	modalCategory.setAttribute('list', 'category-list');
 	modalCategory.setAttribute('autocomplete', 'off');
 	const datalistCategories = document.createElement('datalist');
 	datalistCategories.id = 'category-list';
 	modalFieldset.append(datalistCategories);
 
-
-	overlayControl(overlay, buttonModalClose);
+	overlayControl(overlay);
 	discountCheckboxControl();
 	fileControl();
 	renderCategories(datalistCategories);
 
-	if (!data) formControl(modalForm, overlay, 'POST', tbody, null, newId);
-	else formControl(modalForm, overlay, 'PATCH', null, data.id, null);
+	if (!data) formControl(modalForm, overlay, 'POST', tbody, null);
+	else formControl(modalForm, overlay, 'PATCH', null, data.id);
 };
 
 export const showConfirmation = (id, row, currentTitle) => {

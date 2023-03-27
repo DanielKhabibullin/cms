@@ -1,5 +1,5 @@
 import {apiURL, buttonAddImage, modalCheckbox, modalFieldset,
-	modalForm, modalInputDiscount, overlay, randomId} from './const.js';
+	modalForm, modalInputDiscount} from './const.js';
 import {createRow} from './createElements.js';
 import {fetchRequest} from './fetchRequest.js';
 import {showConfirmation, showError, showModal} from './modal.js';
@@ -15,18 +15,21 @@ const updateRow = (id, item) => {
 export const addButtonControl = (buttonAdd, tbody) => {
 	buttonAdd.addEventListener('click', () => {
 		showModal(null, null, tbody);
+		document.body.style.overflow = 'hiiden';
 	});
 };
 
 export const overlayControl = (overlay, closeButton) => {
 	overlay.addEventListener('click', ({target}) => {
-		if (target === overlay || target === closeButton) {
+		if (target === overlay || target.closest('.modal__close') ||
+		target.closest('.overlay__message_close')) {
 			overlay.classList.remove('active');
+			document.body.style.overflow = 'auto';
 		}
 	});
 };
 
-export const formControl = (form, overlay, method, tbody, id, newId) => {
+export const formControl = (form, overlay, method, tbody, id) => {
 	form.addEventListener('input', ({target}) => {
 		if (target === form.discount || target === form.count ||
 			target === form.price) {
@@ -42,7 +45,6 @@ export const formControl = (form, overlay, method, tbody, id, newId) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const newItem = Object.fromEntries(formData);
-		id ? newItem.id = id : newItem.id = newId;
 		if (!newItem.discount) {
 			newItem.discount = 0;
 		}
@@ -81,18 +83,16 @@ export const rowControl = (tbody) => {
 		const target = e.target;
 		const row = target.closest('tr');
 		const currentId = row.dataset.id;
-		// const currentId = row.querySelector('.table__cell_name')
-		// .getAttribute('data-id');
 		if (target.closest('.table__btn_del')) {
 			const currentTitle = row.querySelector('.table__cell_title').textContent;
 			showConfirmation(currentId, row, currentTitle);
 			document.body.style.overflow = 'hidden';
-		} else if (target.closest('.table__btn_pic') && row.dataset.pic) { // TODO
+		} else if (target.closest('.table__btn_pic') && row.dataset.pic) {
 			const width = 800;
 			const height = 600;
 			const left = (screen.width / 2) - (width / 2);
 			const top = (screen.height / 2) - (height / 2);
-			const popup = open(target.dataset.pic, 'picture', `width=${width},
+			const popup = open('about:blank', 'picture', `width=${width},
 				height=${height}, top=${top}, left=${left}`);
 			popup.document.body.innerHTML = `
 			<img src="${apiURL}/${row.dataset.pic}" style="max-width: 600px;">
@@ -141,13 +141,10 @@ export const discountCheckboxControl = () => {
 		if (modalCheckbox.checked) {
 			modalInputDiscount.removeAttribute('disabled');
 			modalInputDiscount.setAttribute('required', true);
-			modalInputDiscount.style.backgroundColor = '#F4F2FF';
-
 			modalTotalPrice();
 		} else {
 			modalInputDiscount.value = '';
 			modalInputDiscount.setAttribute('disabled', true);
-			modalInputDiscount.style.backgroundColor = '#dbdbdb';
 			modalTotalPrice();
 		}
 	});

@@ -124,6 +124,7 @@
 	display: block;
 }
 
+
 .modal__label_count {
 	grid-area: count;
 }
@@ -153,7 +154,7 @@
 	grid-area: file-add;
 	position: relative;
 	/* display: none; */
-	width: 200px;
+	max-width: 400px;
 	height: 200px;
 	margin: 0 auto;
 }
@@ -223,6 +224,10 @@
 .modal__input_textarea {
 	min-height: 111px;
 	resize: none;
+}
+
+.modal__input_discount:disabled {
+	background-color: #dbdbdb;
 }
 
 .modal__checkbox {
@@ -308,8 +313,6 @@
 	text-transform: uppercase;
 	background: #6D5BD0;
 	border-radius: 6px;
-	/* Backgrounds/Primary */
-
 	color: #FFFFFF;
 }
 
