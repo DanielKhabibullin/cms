@@ -10,7 +10,7 @@ export const getTotalPrice = () => {
 	});
 	document.querySelector('.cms__total-price').textContent = `$ ${sumTotal}`;
 	return sumTotal;
-}; // TODO
+};
 
 export const goodNumberChange = () => {
 	const goods = tbody.querySelectorAll('tr');
@@ -26,8 +26,7 @@ export const renderGoods = elem => {
 		callback(err, data) {
 			if (err) return;
 			const allRow = data.map(createRow);
-			elem.append(...allRow); // tbody
-			// TODO data ?
+			elem.append(...allRow);
 			goodNumberChange();
 		},
 	});

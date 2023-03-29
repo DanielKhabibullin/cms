@@ -18,7 +18,7 @@ export const fetchRequest = async (url, {
 
 		if (response.ok) {
 			const data = await response.json();
-			if (callback) return callback(null, data);
+			if (callback) callback(null, data);
 			return;
 		}
 

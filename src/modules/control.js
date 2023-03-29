@@ -1,5 +1,5 @@
-import {apiURL, buttonAddImage, modalCheckbox, modalFieldset,
-	modalForm, modalInputDiscount} from './const.js';
+import {apiURL, buttonAdd, buttonAddImage, modalCheckbox, modalFieldset,
+	modalForm, modalInputDiscount, searchInput} from './const.js';
 import {createRow} from './createElements.js';
 import {fetchRequest} from './fetchRequest.js';
 import {showConfirmation, showError, showModal} from './modal.js';
@@ -12,10 +12,10 @@ const updateRow = (id, item) => {
 	row.replaceWith(createRow(item));
 };
 
-export const addButtonControl = (buttonAdd, tbody) => {
+export const addButtonControl = (tbody) => {
 	buttonAdd.addEventListener('click', () => {
 		showModal(null, null, tbody);
-		document.body.style.overflow = 'hiiden';
+		document.body.style.overflow = 'hidden';
 	});
 };
 
@@ -48,14 +48,19 @@ export const formControl = (form, overlay, method, tbody, id) => {
 		if (!newItem.discount) {
 			newItem.discount = 0;
 		}
+
 		newItem.image = await toBase64(newItem.image);
 		if (newItem.image === 'data:') delete newItem.image;
+		const imageContainer = document.querySelector('.image-container');
+		if (!imageContainer) {
+			newItem.image = 'image/notimage.jpg';
+		}
 
 		fetchRequest(`/api/goods${id ? '/' + id : ''}`, {
 			method,
 			body: newItem,
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json; charset=utf-8',
 			},
 			callback(err, item) {
 				if (err) {
@@ -71,7 +76,7 @@ export const formControl = (form, overlay, method, tbody, id) => {
 				} else if (id) {
 					updateRow(item.id, item);
 				}
-				getTotalPrice();
+				document.body.style.overflow = 'auto';
 				goodNumberChange();
 			},
 		});
@@ -138,19 +143,17 @@ export const modalActivate = () => {
 
 export const discountCheckboxControl = () => {
 	modalCheckbox.addEventListener('change', () => {
-		if (modalCheckbox.checked) {
-			modalInputDiscount.removeAttribute('disabled');
-			modalInputDiscount.setAttribute('required', true);
-			modalTotalPrice();
-		} else {
+		modalInputDiscount.disabled = !modalInputDiscount.disabled;
+
+		if (modalInputDiscount.disabled) {
 			modalInputDiscount.value = '';
-			modalInputDiscount.setAttribute('disabled', true);
-			modalTotalPrice();
 		}
+		modalTotalPrice();
 	});
 };
 
 export const fileControl = () => {
+	const imageContainer = document.querySelector('.image-container');
 	buttonAddImage.addEventListener('change', () => {
 		const file = buttonAddImage.files[0];
 		const fileSizeInMB = file.size / (1024 * 1024);
@@ -179,6 +182,11 @@ export const fileControl = () => {
 			imageContainerNew.append(preview);
 		}
 	});
+	if (imageContainer) {
+		imageContainer.addEventListener('click', () => {
+			imageContainer.remove();
+		});
+	}
 };
 
 export const confirmationControl = (modal, id, row) => {
@@ -197,7 +205,6 @@ export const confirmationControl = (modal, id, row) => {
 						showError(err);
 						return;
 					}
-
 					getTotalPrice();
 					row.remove();
 					document.body.style.overflow = 'auto';
@@ -209,8 +216,8 @@ export const confirmationControl = (modal, id, row) => {
 	});
 };
 
-export const searchControl = (search, tbody) => {
-	search.addEventListener('input', e => {
+export const searchControl = (tbody) => {
+	searchInput.addEventListener('input', e => {
 		const target = e.target;
 		const text = target.value;
 

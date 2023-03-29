@@ -11,11 +11,10 @@ export const buttonAdd = document.querySelector('.panel__add-goods');
 export const overlay = document.querySelector('.overlay');
 export const formOverlay = document.querySelector('.overlay__modal');
 export const wrapperId = document.querySelector('.vendor-code__wrapper');
-
 export const buttonAddImage = document.querySelector('.modal__file');
 export const modalFieldset = document.querySelector('.modal__fieldset');
-// export const API_URL = 'http://localhost:3000';
-export const apiURL = 'https://conscious-stellar-rainbow.glitch.me';
+export const apiURL = 'http://localhost:3000';
+export const API_URL = 'https://conscious-stellar-rainbow.glitch.me';
 
 export const modalCategory = document.getElementById('category');
 

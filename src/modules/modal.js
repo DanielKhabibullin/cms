@@ -64,7 +64,6 @@ export const showModal = async (err, data, tbody) => {
 		modalForm.description.value = `${data.description}`;
 		modalForm.count.value = `${data.count}`;
 		modalForm.price.value = `${data.price}`;
-		modalForm.discount.value = `${data.discount}`;
 		modalSubmit.textContent = 'Изменить товар';
 		if (data.image && data.image !== 'image/notimage.jpg') {
 			const imageContainerNew = document.createElement('div');
@@ -79,9 +78,7 @@ export const showModal = async (err, data, tbody) => {
 		if (data && data.discount !== 0) {
 			modalCheckbox.checked = true;
 			modalInputDiscount.removeAttribute('disabled');
-		} else {
-			modalCheckbox.checked = false;
-			modalInputDiscount.setAttribute('disabled', true);
+			modalForm.discount.value = `${data.discount}`;
 		}
 	} else {
 		modalTitle.textContent = 'Добавить товар';
@@ -92,8 +89,11 @@ export const showModal = async (err, data, tbody) => {
 		modalForm.description.value = ``;
 		modalForm.count.value = ``;
 		modalForm.price.value = ``;
-		modalForm.discount.value = ``;
 		modalSubmit.textContent = 'Добавить товар';
+		modalCheckbox.checked = false;
+		modalForm.discount.value = ``;
+		modalInputDiscount.textContent = ``;
+		modalInputDiscount.setAttribute('disabled', true);
 	}
 	modalTotalPrice();
 
@@ -108,7 +108,7 @@ export const showModal = async (err, data, tbody) => {
 	fileControl();
 	renderCategories(datalistCategories);
 
-	if (!data) formControl(modalForm, overlay, 'POST', tbody, null);
+	if (!data) formControl(modalForm, overlay, 'POST', tbody);
 	else formControl(modalForm, overlay, 'PATCH', null, data.id);
 };
 
