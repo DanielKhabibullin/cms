@@ -1,10 +1,7 @@
-import {confirmationControl, discountCheckboxControl, fileControl,
-	formControl, modalTotalPrice, overlayControl} from './control.js';
+import {apiURL} from './const.js';
+import {confirmationControl, fileControl, formControl, modalActivate,
+	overlayControl} from './control.js';
 import {renderCategories} from './render.js';
-import {apiURL, modalCategory, modalCheckbox,
-	modalFieldset, modalFile, modalForm, modalId,
-	modalInputDiscount,
-	modalSubmit, modalTitle, overlay, wrapperId} from './const.js';
 
 export const showError = message => {
 	console.warn(message);
@@ -44,68 +41,156 @@ export const showModal = async (err, data, tbody) => {
 		return;
 	}
 
+	const overlay = document.createElement('div');
+	overlay.className = 'overlay';
 	overlay.classList.add('active');
+
 	const imageContainer = document.querySelector('.image-container');
 	if (imageContainer) {
 		imageContainer.remove();
 	}
 	const datalistCategoriesOld = document.querySelector('#category-list');
-
 	if (datalistCategoriesOld) {
 		datalistCategoriesOld.remove();
 	}
-	if (data) {
-		modalTitle.textContent = 'Изменить товар';
-		wrapperId.style.display = 'flex';
-		modalId.textContent = `${data.id}`;
-		modalForm.title.value = `${data.title}`;
-		modalForm.category.value = `${data.category}`;
-		modalForm.units.value = `${data.units}`;
-		modalForm.description.value = `${data.description}`;
-		modalForm.count.value = `${data.count}`;
-		modalForm.price.value = `${data.price}`;
-		modalSubmit.textContent = 'Изменить товар';
-		if (data.image && data.image !== 'image/notimage.jpg') {
-			const imageContainerNew = document.createElement('div');
-			modalFile.textContent = `Изменить изображение`;
-			imageContainerNew.classList.add('image-container');
-			modalFieldset.append(imageContainerNew);
-			const preview = document.createElement('img');
-			preview.onload = () => URL.revokeObjectURL(preview.src);
-			preview.src = `${apiURL}/${data.image}`;
-			imageContainerNew.append(preview);
-		}
-		if (data && data.discount !== 0) {
-			modalCheckbox.checked = true;
-			modalInputDiscount.removeAttribute('disabled');
-			modalForm.discount.value = `${data.discount}`;
-		}
-	} else {
-		modalTitle.textContent = 'Добавить товар';
-		wrapperId.style.display = 'none';
-		modalForm.title.value = ``;
-		modalForm.category.value = ``;
-		modalForm.units.value = ``;
-		modalForm.description.value = ``;
-		modalForm.count.value = ``;
-		modalForm.price.value = ``;
-		modalSubmit.textContent = 'Добавить товар';
-		modalCheckbox.checked = false;
-		modalForm.discount.value = ``;
-		modalInputDiscount.textContent = ``;
-		modalInputDiscount.setAttribute('disabled', true);
-	}
-	modalTotalPrice();
 
-	modalCategory.setAttribute('list', 'category-list');
-	modalCategory.setAttribute('autocomplete', 'off');
+	const modalWrapper = document.createElement('div');
+	modalWrapper.classList.add('overlay__modal', 'modal');
+	modalWrapper.innerHTML = `
+		<button class="modal__close">
+			<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="m2 2 20 20M2 22 22 2" stroke="currentColor" stroke-width="3"
+				stroke-linecap="round"/></svg>
+		</button>
+	`;
+
+	const modalTop = document.createElement('div');
+	modalTop.className = 'modal_top';
+
+	const modalTitle = document.createElement('h2');
+	modalTitle.classList.add('modal__title');
+	modalTitle.textContent = data ? 'Изменить товар' : 'Добавить товар';
+
+	modalTop.append(modalTitle);
+
+	if (data) {
+		const idWrapper = document.createElement('div');
+		idWrapper.classList.add('modal__vendor-code', 'vendor-code');
+		idWrapper.textContent = `ID: ${data.id}`;
+		modalTop.append(idWrapper);
+	}
+
+	const form = document.createElement('form');
+	form.classList.add('modal__form');
+	form.innerHTML = `
+	<fieldset class="modal__fieldset">
+		<label class="modal__label modal__label_name" for="title">
+			<span class="modal__text">Наименование</span>
+			<input class="modal__input" type="text" name="title" id="title"
+			autocomplete="off" ${data ? `value="${data.title}"` : ''} required>
+		</label>
+
+
+		<label class="modal__label modal__label_category" for="category">
+			<span class="modal__text">Категория</span>
+			<input class="modal__input" type="text" name="category" id="category"
+			list= "category-list" autocomplete="off" 
+			${data ? `value="${data.category}"` : ''} required>
+		</label>
+
+		<label class="modal__label modal__label_description" for="description">
+			<span class="modal__text">Описание</span>
+			<textarea class="modal__input modal__input_textarea" name="description"
+			id="description" required>${data ? data.description : ''}</textarea>
+		</label>
+
+		<label class="modal__label modal__label_units" for="units">
+			<span class="modal__text">Единицы измерения</span>
+			<input class="modal__input" type="text" name="units" id="units"
+			autocomplete="off" ${data ? `value="${data.units}"` : ''} required>
+		</label>
+
+		<div class="modal__label modal__label_discount">
+			<label class="modal__text" for="discount">Дисконт</label>
+			<div class="modal__checkbox-wrapper">
+				<input class="modal__checkbox" type="checkbox" name="discount_check"
+				id="discount_check" ${data && data.discount ? 'checked' : ''}>
+				<input class="modal__input modal__input_discount" type="number"
+				autocomplete="off" name="discount" id="discount"
+				${data && data.discount ? `value="${data.discount}"` : `value="0"`}
+				${data && data.discount ? '' : 'disabled'}>
+			</div>
+		</div>
+
+
+		<label class="modal__label modal__label_count" for="count">
+			<span class="modal__text">Количество</span>
+			<input class="modal__input  modal__input_count"
+			type="number" name="count" id="count"
+			autocomplete="off" ${data ? `value="${data.count}"` : ''} required>
+		</label>
+
+		<label class="modal__label modal__label_price" for="price">
+			<span class="modal__text">Цена</span>
+			<input class="modal__input  modal__input_price"
+			type="number" name="price" id="price"
+			autocomplete="off" ${data ? `value="${data.price}"` : ''} required>
+		</label>
+
+		<label tabindex="0" for="image" class="modal__label modal__label_file">
+		Добавить изображение</label>
+		<input class="modal__file visually-hidden" tabindex="-1" type="file"
+		name="image" id="image">
+	</fieldset>
+
+
+	<div class="modal__footer">
+		<label class="modal__total">Итоговая стоимость:
+			<output class="modal__total-price" name="total">$&nbsp;${(data ?
+				data.count * (data.price - data.price *
+					data.discount / 100) : 0).toFixed(2)}</output>
+		</label>
+
+		<button class="modal__submit" type="submit">
+		${data ? 'Изменить товар' : 'Добавить товар'}</button>
+	</div>
+	`;
+
+	document.body.append(overlay);
+	overlay.append(modalWrapper);
+	modalWrapper.append(modalTop, form);
+
+	const modalFile = document.querySelector('.modal__label_file');
+	const modalFieldset = document.querySelector('.modal__fieldset');
+	const modalForm = document.querySelector('.modal__form');
+	const modalInputPrice = document.querySelector('.modal__input_price');
+	const modalInputCount = document.querySelector('.modal__input_count');
+	const modalCheckbox = document.querySelector('.modal__checkbox');
+	const modalInputDiscount = document
+		.querySelector('.modal__input_discount');
+	const buttonAddImage = document.querySelector('.modal__file');
 	const datalistCategories = document.createElement('datalist');
 	datalistCategories.id = 'category-list';
 	modalFieldset.append(datalistCategories);
 
+	const totalPrice = modalForm.querySelector('.modal__total-price');
+
+	if (data && data.image !== 'image/notimage.jpg') {
+		const imageContainerNew = document.createElement('div');
+
+		modalFile.textContent = `Изменить изображение`;
+		imageContainerNew.classList.add('image-container');
+		modalFieldset.append(imageContainerNew);
+		const preview = document.createElement('img');
+		preview.onload = () => URL.revokeObjectURL(preview.src);
+		preview.src = `${apiURL}/${data.image}`;
+		imageContainerNew.append(preview);
+	}
+
+	modalActivate(modalForm, modalCheckbox, modalInputPrice, modalInputCount,
+		modalInputDiscount, totalPrice);
 	overlayControl(overlay);
-	discountCheckboxControl();
-	fileControl();
+	fileControl(buttonAddImage, modalFieldset);
 	renderCategories(datalistCategories);
 
 	if (!data) formControl(modalForm, overlay, 'POST', tbody);

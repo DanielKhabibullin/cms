@@ -1,5 +1,4 @@
-import {apiURL, buttonAdd, buttonAddImage, modalCheckbox, modalFieldset,
-	modalForm, modalInputDiscount, searchInput} from './const.js';
+import {apiURL, buttonAdd, searchInput} from './const.js';
 import {createRow} from './createElements.js';
 import {fetchRequest} from './fetchRequest.js';
 import {showConfirmation, showError, showModal} from './modal.js';
@@ -19,11 +18,11 @@ export const addButtonControl = (tbody) => {
 	});
 };
 
-export const overlayControl = (overlay, closeButton) => {
+export const overlayControl = (overlay) => {
 	overlay.addEventListener('click', ({target}) => {
 		if (target === overlay || target.closest('.modal__close') ||
 		target.closest('.overlay__message_close')) {
-			overlay.classList.remove('active');
+			overlay.remove();
 			document.body.style.overflow = 'auto';
 		}
 	});
@@ -45,9 +44,6 @@ export const formControl = (form, overlay, method, tbody, id) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const newItem = Object.fromEntries(formData);
-		if (!newItem.discount) {
-			newItem.discount = 0;
-		}
 
 		newItem.image = await toBase64(newItem.image);
 		if (newItem.image === 'data:') delete newItem.image;
@@ -69,7 +65,7 @@ export const formControl = (form, overlay, method, tbody, id) => {
 					return;
 				}
 				form.reset();
-				overlay.classList.remove('active');
+				overlay.remove();
 
 				if (tbody) {
 					tbody.append(createRow(item));
@@ -114,45 +110,39 @@ export const rowControl = (tbody) => {
 	});
 };
 
-export const modalTotalPrice = () => {
-	if (!modalForm.discount.value) {
-		modalForm.discount.value = 0;
-	}
-	const discount = (modalForm.price.value *
-		modalForm.discount.value / 100).toFixed(2);
-	const totalItemPrice = (modalForm.count.value *
-		(modalForm.price.value - discount)).toFixed(2);
-	modalForm.total.value = `$ ${totalItemPrice}`;
-};
-
-export const modalActivate = () => {
+export const modalActivate = (modalForm, modalCheckbox, modalInputPrice,
+		modalInputCount, modalInputDiscount, totalPrice) => {
+	const modalTotalPrice = () => {
+		const discount = (modalForm.price.value *
+			modalInputDiscount.value / 100).toFixed(2);
+		const totalItemPrice = (modalForm.count.value *
+			(modalForm.price.value - discount)).toFixed(2);
+		totalPrice.value = `$ ${totalItemPrice}`;
+	};
 	let timeout = null;
-	modalForm.price.addEventListener('input', () => {
-		clearTimeout(timeout);
-		timeout = setTimeout(modalTotalPrice, 300);
-	});
-	modalForm.discount.addEventListener('input', () => {
-		clearTimeout(timeout);
-		timeout = setTimeout(modalTotalPrice, 300);
-	});
-	modalForm.count.addEventListener('input', () => {
-		clearTimeout(timeout);
-		timeout = setTimeout(modalTotalPrice, 300);
-	});
-};
-
-export const discountCheckboxControl = () => {
 	modalCheckbox.addEventListener('change', () => {
 		modalInputDiscount.disabled = !modalInputDiscount.disabled;
 
 		if (modalInputDiscount.disabled) {
-			modalInputDiscount.value = '';
+			modalInputDiscount.value = 0;
 		}
 		modalTotalPrice();
 	});
+	modalInputPrice.addEventListener('input', () => {
+		clearTimeout(timeout);
+		timeout = setTimeout(modalTotalPrice, 300);
+	});
+	modalInputDiscount.addEventListener('input', () => {
+		clearTimeout(timeout);
+		timeout = setTimeout(modalTotalPrice, 300);
+	});
+	modalInputCount.addEventListener('input', () => {
+		clearTimeout(timeout);
+		timeout = setTimeout(modalTotalPrice, 300);
+	});
 };
 
-export const fileControl = () => {
+export const fileControl = (buttonAddImage, modalFieldset) => {
 	const imageContainer = document.querySelector('.image-container');
 	buttonAddImage.addEventListener('change', () => {
 		const file = buttonAddImage.files[0];

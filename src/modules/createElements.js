@@ -20,7 +20,8 @@ export const createRow = (item) => {
 		<td class="table__cell  table__cell_price">${totalItemPrice}</td>
 		<td class="table__cell table__cell_btn-wrapper">
 			<button class="table__btn table__btn_pic" data-pic="${image}"${hasImage ?
-				'' : 'disabled style="cursor: not-allowed; background-color: #a5a5a5;"'}></button>
+				'' : `disabled style="cursor: not-allowed;
+				background-color: #a5a5a5;"`}></button>
 			<button class="table__btn table__btn_edit" ></button>
 			<button class="table__btn table__btn_del"></button>
 		</td>
@@ -33,13 +34,3 @@ export const createOption = category => {
 	option.value = category;
 	return option;
 };
-
-// modalForm.querySelectorAll('input').forEach(input => {
-// if (input.name === 'count' || input.name === 'discount_count' ||
-// input.name === 'price') {
-// input.setAttribute('type', 'number');
-// }
-// if (input.name !== 'image' && input.name !== 'discount') {
-// input.setAttribute('required', true);
-// }
-// }); // ?? HTML
