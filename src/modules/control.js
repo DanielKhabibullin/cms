@@ -79,6 +79,16 @@ export const formControl = (form, overlay, method, tbody, id) => {
 	});
 };
 
+export const discountCheckboxControl = (modalCheckbox, modalInputDiscount) => {
+	modalCheckbox.addEventListener('change', () => {
+		modalInputDiscount.disabled = !modalInputDiscount.disabled;
+
+		if (modalInputDiscount.disabled) {
+			modalInputDiscount.value = '0';
+		}
+	});
+};
+
 export const rowControl = (tbody) => {
 	tbody.addEventListener('click', e => {
 		const target = e.target;

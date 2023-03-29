@@ -1,5 +1,5 @@
 import {apiURL} from './const.js';
-import {confirmationControl, fileControl, formControl, modalActivate,
+import {confirmationControl, discountCheckboxControl, fileControl, formControl, modalActivate,
 	overlayControl} from './control.js';
 import {renderCategories} from './render.js';
 
@@ -190,6 +190,7 @@ export const showModal = async (err, data, tbody) => {
 	modalActivate(modalForm, modalCheckbox, modalInputPrice, modalInputCount,
 		modalInputDiscount, totalPrice);
 	overlayControl(overlay);
+	discountCheckboxControl(modalCheckbox, modalInputDiscount);
 	fileControl(buttonAddImage, modalFieldset);
 	renderCategories(datalistCategories);
 
