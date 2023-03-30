@@ -32,7 +32,7 @@ export const formControl = (form, overlay, method, tbody, id) => {
 	form.addEventListener('input', ({target}) => {
 		if (target === form.discount || target === form.count ||
 			target === form.price) {
-			target.value = target.value.replace(/\D/, '');
+			target.value = target.value.replace(/^0+|\D+/g, '');
 		} else if (target === form.units) {
 			target.value = target.value.replace(/[^а-я]/i, '');
 		} else if (target === form.caregory) {
@@ -44,6 +44,10 @@ export const formControl = (form, overlay, method, tbody, id) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const newItem = Object.fromEntries(formData);
+		if (!newItem.discount) {
+			newItem.discount = 0;
+			console.log('newItem.discount', newItem.discount);
+		}
 
 		newItem.image = await toBase64(newItem.image);
 		if (newItem.image === 'data:') delete newItem.image;
@@ -76,16 +80,6 @@ export const formControl = (form, overlay, method, tbody, id) => {
 				goodNumberChange();
 			},
 		});
-	});
-};
-
-export const discountCheckboxControl = (modalCheckbox, modalInputDiscount) => {
-	modalCheckbox.addEventListener('change', () => {
-		modalInputDiscount.disabled = !modalInputDiscount.disabled;
-
-		if (modalInputDiscount.disabled) {
-			modalInputDiscount.value = '0';
-		}
 	});
 };
 
@@ -131,12 +125,15 @@ export const modalActivate = (modalForm, modalCheckbox, modalInputPrice,
 	};
 	let timeout = null;
 	modalCheckbox.addEventListener('change', () => {
-		modalInputDiscount.disabled = !modalInputDiscount.disabled;
-
-		if (modalInputDiscount.disabled) {
-			modalInputDiscount.value = 0;
+		if (!modalCheckbox.checked) {
+			modalInputDiscount.value = '0';
+			modalInputDiscount.setAttribute('disabled', true);
+			modalTotalPrice();
+		} else {
+			modalInputDiscount.value = '0';
+			modalInputDiscount.removeAttribute('disabled');
+			modalTotalPrice();
 		}
-		modalTotalPrice();
 	});
 	modalInputPrice.addEventListener('input', () => {
 		clearTimeout(timeout);

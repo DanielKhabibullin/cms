@@ -1,6 +1,6 @@
 import {apiURL} from './const.js';
-import {confirmationControl, discountCheckboxControl, fileControl, formControl, modalActivate,
-	overlayControl} from './control.js';
+import {confirmationControl, fileControl, formControl,
+	modalActivate, overlayControl} from './control.js';
 import {renderCategories} from './render.js';
 
 export const showError = message => {
@@ -114,11 +114,11 @@ export const showModal = async (err, data, tbody) => {
 			<label class="modal__text" for="discount">Дисконт</label>
 			<div class="modal__checkbox-wrapper">
 				<input class="modal__checkbox" type="checkbox" name="discount_check"
-				id="discount_check" ${data && data.discount ? 'checked' : ''}>
+				id="discount_check" ${data && data.discount != 0 ? 'checked' : ''}>
 				<input class="modal__input modal__input_discount" type="number"
 				autocomplete="off" name="discount" id="discount"
-				${data && data.discount ? `value="${data.discount}"` : `value="0"`}
-				${data && data.discount ? '' : 'disabled'}>
+				${data && data.discount != 0 ? `value="${data.discount}"` : ''}
+				${data && data.discount != 0 ? '' : 'disabled'}>
 			</div>
 		</div>
 
@@ -155,7 +155,6 @@ export const showModal = async (err, data, tbody) => {
 		${data ? 'Изменить товар' : 'Добавить товар'}</button>
 	</div>
 	`;
-
 	document.body.append(overlay);
 	overlay.append(modalWrapper);
 	modalWrapper.append(modalTop, form);
@@ -190,7 +189,6 @@ export const showModal = async (err, data, tbody) => {
 	modalActivate(modalForm, modalCheckbox, modalInputPrice, modalInputCount,
 		modalInputDiscount, totalPrice);
 	overlayControl(overlay);
-	discountCheckboxControl(modalCheckbox, modalInputDiscount);
 	fileControl(buttonAddImage, modalFieldset);
 	renderCategories(datalistCategories);
 
